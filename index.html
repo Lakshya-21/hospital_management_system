@@ -1,0 +1,1433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Management Information System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Login screen styles */
+        .login-screen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-header h1 {
+            color: #0ea5e9;
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .role-selector {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .role-button {
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .role-button.active {
+            border-color: #0ea5e9;
+            background: #eff6ff;
+            color: #0ea5e9;
+        }
+
+        .main-app {
+            display: none;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 20px 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-left h1 {
+            color: #0ea5e9;
+            font-size: 1.8rem;
+            margin-bottom: 4px;
+        }
+
+        .header-left p {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: #0ea5e9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .logout-btn {
+            padding: 8px 16px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .tabs {
+            display: flex;
+            background: white;
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 12px 16px;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+            white-space: nowrap;
+            min-width: 120px;
+        }
+
+        .tab-button.active {
+            background: #0ea5e9;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #0ea5e9;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .submit-button {
+            background: #0ea5e9;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .submit-button:hover {
+            background: #0284c7;
+        }
+
+        .action-button {
+            padding: 6px 16px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-left: 8px;
+        }
+
+        .action-button.primary {
+            background: #0ea5e9;
+            color: white;
+            border-color: #0ea5e9;
+        }
+
+        .action-button.success {
+            background: #22c55e;
+            color: white;
+            border-color: #22c55e;
+        }
+
+        .action-button.danger {
+            background: #ef4444;
+            color: white;
+            border-color: #ef4444;
+        }
+
+        .item {
+            padding: 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+        }
+
+        .error {
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .stock-indicator {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .stock-low {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .stock-medium {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .stock-high {
+            background: #d1fae5;
+            color: #065f46;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login screen -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-card">
+            <div class="login-header">
+                <h1>🏥 HMIS</h1>
+                <p>Hospital Management Information System</p>
+            </div>
+            <div id="loginError" class="error" style="display: none;"></div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Select Role</label>
+                    <div class="role-selector">
+                        <div class="role-button active" data-role="admin">👨‍💼 Admin</div>
+                        <div class="role-button" data-role="doctor">👨‍⚕️ Doctor</div>
+                        <div class="role-button" data-role="receptionist">👩‍💻 Receptionist</div>
+                        <div class="role-button" data-role="pharmacist">💊 Pharmacist</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" placeholder="Enter username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter password" required>
+                </div>
+                <button type="submit" class="submit-button">Login</button>
+            </form>
+            <div style="margin-top: 20px; font-size: 0.8rem; color: #64748b;">
+                <p><strong>Demo Credentials:</strong></p>
+                <p>Admin: admin/admin123 (Lakshya)</p>
+                <p>Doctor: doctor/doctor123 (Dr. Saumy)</p>
+                <p>Receptionist: receptionist/recept123 (Vansh)</p>
+                <p>Pharmacist: pharmacist/pharm123 (Akhil)</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main app -->
+    <div id="mainApp" class="main-app">
+        <div class="container">
+            <!-- Header -->
+            <div class="header">
+                <div class="header-left">
+                    <h1>Hospital Management System</h1>
+                    <p id="welcomeMessage">Welcome back!</p>
+                </div>
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">A</div>
+                    <div>
+                        <div id="userName">Admin User</div>
+                        <div style="font-size: 0.8rem; color: #64748b;" id="userRole">Administrator</div>
+                    </div>
+                    <button class="logout-btn" onclick="logout()">Logout</button>
+                </div>
+            </div>
+
+            <!-- Dashboard Stats (Admin Only) -->
+            <div id="adminDashboard" class="stats-grid" style="display: none;">
+                <div class="stat-card">
+                    <div>Total Patients</div>
+                    <div class="stat-number" id="totalPatients">0</div>
+                </div>
+                <div class="stat-card">
+                    <div>Staff Members</div>
+                    <div class="stat-number" id="totalStaff">0</div>
+                </div>
+                <div class="stat-card">
+                    <div>Avg Appointments/Day</div>
+                    <div class="stat-number" id="avgAppointmentsPerDay">0</div>
+                </div>
+                <div class="stat-card">
+                    <div>Total Appointments</div>
+                    <div class="stat-number" id="totalAppointments">0</div>
+                </div>
+                <div class="stat-card">
+                    <div>Total Revenue</div>
+                    <div class="stat-number" id="totalRevenue">₹0</div>
+                </div>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <div class="tabs" id="navigationTabs">
+                <!-- Tabs will be dynamically populated based on role -->
+            </div>
+
+            <!-- Tab Contents -->
+            
+            <!-- Dashboard Tab (Admin) -->
+            <div id="dashboard" class="tab-content">
+                <h2>Dashboard Analytics</h2>
+                <p>Welcome to the admin dashboard. View comprehensive analytics and manage the entire hospital system.</p>
+            </div>
+
+            <!-- Patients Tab (Receptionist) -->
+            <div id="patients" class="tab-content">
+                <h2>Patients</h2>
+                <button class="action-button primary" onclick="showAddPatientForm()">+ Add Patient</button>
+                <div id="patientsList" class="loading">Loading patients...</div>
+                
+                <!-- Add Patient Form (hidden by default) -->
+                <div id="addPatientForm" style="display: none; margin-top: 20px;">
+                    <h3>Add New Patient</h3>
+                    <form id="patientForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Name</label>
+                                <input type="text" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Age</label>
+                                <input type="number" name="age" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Phone</label>
+                                <input type="tel" name="phone" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" name="email">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Address</label>
+                            <textarea name="address"></textarea>
+                        </div>
+                        <button type="submit" class="submit-button">Add Patient</button>
+                        <button type="button" class="action-button" onclick="hideAddPatientForm()">Cancel</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Appointments Tab (Doctor, Receptionist) -->
+            <div id="appointments" class="tab-content">
+                <h2>Appointments</h2>
+                <button class="action-button primary" id="addAppointmentBtn" onclick="showAddAppointmentForm()">+ Schedule Appointment</button>
+                <div id="appointmentsList" class="loading">Loading appointments...</div>
+                
+                <!-- Add Appointment Form -->
+                <div id="addAppointmentForm" style="display: none; margin-top: 20px;">
+                    <h3>Schedule New Appointment</h3>
+                    <form id="appointmentForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Patient</label>
+                                <select name="patientId" required>
+                                    <option value="">Select Patient</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Doctor</label>
+                                <select name="doctor" required id="doctorSelect">
+                                    <option value="">Select Doctor</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Date</label>
+                                <input type="date" name="date" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Time</label>
+                                <input type="time" name="time" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Reason</label>
+                            <textarea name="reason" placeholder="Enter reason for appointment"></textarea>
+                        </div>
+                        <button type="submit" class="submit-button">Schedule Appointment</button>
+                        <button type="button" class="action-button" onclick="hideAddAppointmentForm()">Cancel</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Billing Tab (Receptionist) -->
+            <div id="billing" class="tab-content">
+                <h2>Billing</h2>
+                <button class="action-button primary" onclick="showAddBillForm()">+ Create Bill</button>
+                <div id="billingList" class="loading">Loading billing records...</div>
+                
+                <!-- Add Bill Form -->
+                <div id="addBillForm" style="display: none; margin-top: 20px;">
+                    <h3>Create New Bill</h3>
+                    <form id="billForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Patient</label>
+                                <select name="patientId" required>
+                                    <option value="">Select Patient</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Medicine</label>
+                                <select name="medicineId" required onchange="updateMedicineInfo(this)">
+                                    <option value="">Select Medicine</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Quantity</label>
+                                <input type="number" name="quantity" min="1" required onchange="calculateTotal()">
+                            </div>
+                            <div class="form-group">
+                                <label>Unit Price</label>
+                                <input type="text" name="unitPrice" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Description (Optional)</label>
+                            <textarea name="description"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Total Amount</label>
+                            <input type="text" name="totalAmount" readonly>
+                        </div>
+                        <button type="submit" class="submit-button">Create Bill</button>
+                        <button type="button" class="action-button" onclick="hideAddBillForm()">Cancel</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Staff Tab (Admin) -->
+            <div id="staff" class="tab-content">
+                <h2>Staff Management</h2>
+                <button class="action-button primary" onclick="showAddStaffForm()">+ Add Staff</button>
+                <div id="staffList" class="loading">Loading staff...</div>
+                
+                <!-- Add Staff Form -->
+                <div id="addStaffForm" style="display: none; margin-top: 20px;">
+                    <h3>Add New Staff Member</h3>
+                    <form id="staffForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Name</label>
+                                <input type="text" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Role</label>
+                                <select name="role" required>
+                                    <option value="">Select Role</option>
+                                    <option value="doctor">Doctor</option>
+                                    <option value="nurse">Nurse</option>
+                                    <option value="technician">Technician</option>
+                                    <option value="administrator">Administrator</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Department</label>
+                                <input type="text" name="department" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Phone</label>
+                                <input type="tel" name="phone" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Salary</label>
+                                <input type="number" name="salary" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="submit-button">Add Staff</button>
+                        <button type="button" class="action-button" onclick="hideAddStaffForm()">Cancel</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Medicines Tab (Pharmacist, Doctor) -->
+            <div id="medicines" class="tab-content">
+                <h2>Medicine Inventory</h2>
+                <button class="action-button primary" id="addMedicineBtn" onclick="showAddMedicineForm()" style="display: none;">+ Add Medicine</button>
+                <div id="medicinesList" class="loading">Loading medicines...</div>
+                
+                <!-- Add Medicine Form -->
+                <div id="addMedicineForm" style="display: none; margin-top: 20px;">
+                    <h3>Add New Medicine</h3>
+                    <form id="medicineForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Name</label>
+                                <input type="text" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Category</label>
+                                <input type="text" name="category" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Stock</label>
+                                <input type="number" name="stock" min="0" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Price</label>
+                                <input type="number" name="price" step="0.01" min="0" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Expiry Date</label>
+                                <input type="date" name="expiry" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Supplier</label>
+                                <input type="text" name="supplier" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="submit-button">Add Medicine</button>
+                        <button type="button" class="action-button" onclick="hideAddMedicineForm()">Cancel</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple API client for the Hospital Management System
+        class SimpleHMSAPI {
+            constructor() {
+                this.API_BASE = 'http://localhost:3000/api';
+                this.token = null;
+                this.currentUser = null;
+                this.patients = [];
+                this.medicines = [];
+                this.staff = [];
+                this.init();
+            }
+
+            init() {
+                this.showLoginScreen();
+                this.setupEventListeners();
+            }
+
+            async apiCall(endpoint, options = {}) {
+                const config = {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...(this.token && { 'Authorization': `Bearer ${this.token}` })
+                    },
+                    ...options
+                };
+
+                if (options.body && typeof options.body === 'object') {
+                    config.body = JSON.stringify(options.body);
+                }
+
+                try {
+                    const response = await fetch(`${this.API_BASE}${endpoint}`, config);
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(data.error || 'API request failed');
+                    }
+
+                    return data;
+                } catch (error) {
+                    console.error('API Error:', error);
+                    this.showError(error.message);
+                    throw error;
+                }
+            }
+
+            showError(message) {
+                const errorDiv = document.getElementById('loginError');
+                if (errorDiv) {
+                    errorDiv.textContent = message;
+                    errorDiv.style.display = 'block';
+                }
+                
+                setTimeout(() => {
+                    if (errorDiv) errorDiv.style.display = 'none';
+                }, 5000);
+            }
+
+            showLoginScreen() {
+                document.getElementById('loginScreen').style.display = 'flex';
+                document.getElementById('mainApp').style.display = 'none';
+            }
+
+            showMainApp() {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('mainApp').style.display = 'block';
+                this.updateUI();
+                this.setupRoleBasedUI();
+            }
+
+            updateUI() {
+                if (!this.currentUser) return;
+
+                document.getElementById('userName').textContent = this.currentUser.name;
+                document.getElementById('userRole').textContent = this.getRoleName(this.currentUser.role);
+                document.getElementById('userAvatar').textContent = this.currentUser.name.charAt(0).toUpperCase();
+                document.getElementById('welcomeMessage').textContent = `Welcome back, ${this.currentUser.name}!`;
+            }
+
+            getRoleName(role) {
+                const roleNames = {
+                    admin: 'Administrator',
+                    doctor: 'Doctor',
+                    receptionist: 'Receptionist',
+                    pharmacist: 'Pharmacist'
+                };
+                return roleNames[role] || role;
+            }
+
+            setupRoleBasedUI() {
+                const role = this.currentUser.role;
+                const tabsContainer = document.getElementById('navigationTabs');
+                
+                tabsContainer.innerHTML = '';
+                
+                const roleTabs = {
+                    admin: [
+                        { id: 'dashboard', label: 'Dashboard' },
+                        { id: 'staff', label: 'Staff' }
+                    ],
+                    doctor: [
+                        { id: 'appointments', label: 'Appointments' },
+                        { id: 'medicines', label: 'Medicines' }
+                    ],
+                    receptionist: [
+                        { id: 'patients', label: 'Patients' },
+                        { id: 'appointments', label: 'Appointments' },
+                        { id: 'billing', label: 'Billing' }
+                    ],
+                    pharmacist: [
+                        { id: 'medicines', label: 'Medicines' }
+                    ]
+                };
+
+                const tabs = roleTabs[role] || [];
+                tabs.forEach((tab, index) => {
+                    const button = document.createElement('button');
+                    button.className = `tab-button ${index === 0 ? 'active' : ''}`;
+                    button.textContent = tab.label;
+                    button.addEventListener('click', () => this.showTab(tab.id));
+                    tabsContainer.appendChild(button);
+                });
+
+                if (tabs.length > 0) {
+                    this.showTab(tabs[0].id);
+                }
+
+                document.getElementById('adminDashboard').style.display = role === 'admin' ? 'grid' : 'none';
+                document.getElementById('addAppointmentBtn').style.display = role === 'receptionist' ? 'inline-block' : 'none';
+                document.getElementById('addMedicineBtn').style.display = role === 'pharmacist' ? 'inline-block' : 'none';
+            }
+
+            setupEventListeners() {
+                document.querySelectorAll('.role-button').forEach(button => {
+                    button.addEventListener('click', () => {
+                        document.querySelectorAll('.role-button').forEach(b => b.classList.remove('active'));
+                        button.classList.add('active');
+                    });
+                });
+
+                document.getElementById('loginForm').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    await this.handleLogin(e);
+                });
+
+                document.getElementById('patientForm').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    await this.addPatient(e);
+                });
+
+                document.getElementById('appointmentForm').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    await this.addAppointment(e);
+                });
+
+                document.getElementById('staffForm').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    await this.addStaff(e);
+                });
+
+                document.getElementById('medicineForm').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    await this.addMedicine(e);
+                });
+
+                document.getElementById('billForm').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    await this.addBill(e);
+                });
+            }
+
+            async handleLogin(event) {
+                const selectedRole = document.querySelector('.role-button.active')?.dataset.role;
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+
+                if (!selectedRole || !username || !password) return;
+
+                try {
+                    const response = await this.apiCall('/auth/login', {
+                        method: 'POST',
+                        body: { username, password, role: selectedRole }
+                    });
+
+                    this.token = response.token;
+                    this.currentUser = response.user;
+
+                    document.getElementById('loginError').style.display = 'none';
+                    this.showMainApp();
+                    await this.loadAllData();
+                } catch (error) {
+                    // Error already shown by apiCall
+                }
+            }
+
+            async loadAllData() {
+                try {
+                    const role = this.currentUser.role;
+                    
+                    if (role === 'admin') {
+                        await this.loadStats();
+                        await this.loadStaff();
+                    }
+                    
+                    if (['receptionist', 'admin'].includes(role)) {
+                        await this.loadPatients();
+                    }
+                    
+                    if (['doctor', 'receptionist'].includes(role)) {
+                        await this.loadAppointments();
+                        await this.loadStaff(); // Load staff to populate doctor dropdown
+                    }
+                    
+                    if (['receptionist'].includes(role)) {
+                        await this.loadBilling();
+                    }
+                    
+                    await this.loadMedicines();
+                } catch (error) {
+                    console.error('Error loading data:', error);
+                }
+            }
+
+            // MODIFIED: Updated stats calculation
+            async loadStats() {
+                try {
+                    const stats = await this.apiCall('/dashboard/stats');
+                    document.getElementById('totalPatients').textContent = stats.totalPatients;
+                    document.getElementById('totalStaff').textContent = stats.totalStaff;
+                    document.getElementById('avgAppointmentsPerDay').textContent = stats.avgAppointmentsPerDay;
+                    document.getElementById('totalAppointments').textContent = stats.totalAppointments;
+                    document.getElementById('totalRevenue').textContent = `₹${stats.totalRevenue.toFixed(2)}`;
+                } catch (error) {
+                    console.error('Error loading stats:', error);
+                }
+            }
+
+            async loadPatients() {
+                try {
+                    const patients = await this.apiCall('/patients');
+                    this.patients = patients;
+                    const container = document.getElementById('patientsList');
+                    
+                    if (patients.length === 0) {
+                        container.innerHTML = '<p>No patients found</p>';
+                        return;
+                    }
+
+                    container.innerHTML = patients.map(patient => `
+                        <div class="item">
+                            <div>
+                                <h4>${patient.name}</h4>
+                                <p>ID: ${patient.id} • Age: ${patient.age} • Phone: ${patient.phone}</p>
+                            </div>
+                            <div>
+                                <button class="action-button" onclick="app.viewPatient('${patient.id}')">View</button>
+                                ${this.currentUser.role === 'admin' ? 
+                                    `<button class="action-button danger" onclick="app.deletePatient('${patient.id}')">Delete</button>` : ''
+                                }
+                            </div>
+                        </div>
+                    `).join('');
+
+                    this.populatePatientDropdowns(patients);
+                } catch (error) {
+                    document.getElementById('patientsList').innerHTML = '<p>Error loading patients</p>';
+                }
+            }
+
+            populatePatientDropdowns(patients) {
+                const selects = document.querySelectorAll('select[name="patientId"]');
+                selects.forEach(select => {
+                    select.innerHTML = '<option value="">Select Patient</option>' +
+                        patients.map(p => `<option value="${p.id}">${p.name} (${p.id})</option>`).join('');
+                });
+            }
+
+            async loadAppointments() {
+                try {
+                    const appointments = await this.apiCall('/appointments');
+                    const container = document.getElementById('appointmentsList');
+                    
+                    if (appointments.length === 0) {
+                        container.innerHTML = '<p>No appointments found</p>';
+                        return;
+                    }
+
+                    container.innerHTML = appointments.map(apt => `
+                        <div class="item">
+                            <div>
+                                <h4>${apt.patientName}</h4>
+                                <p>Doctor: ${apt.doctor} • Date: ${apt.date} • Time: ${apt.time}</p>
+                                <p>Status: ${apt.status} • Reason: ${apt.reason}</p>
+                            </div>
+                            <div>
+                                ${this.currentUser.role === 'doctor' ? `
+                                    <button class="action-button success" onclick="app.updateAppointmentStatus('${apt.id}', 'completed')">Complete</button>
+                                    <button class="action-button" onclick="app.updateAppointmentStatus('${apt.id}', 'cancelled')">Cancel</button>
+                                ` : ''}
+                            </div>
+                        </div>
+                    `).join('');
+                } catch (error) {
+                    document.getElementById('appointmentsList').innerHTML = '<p>Error loading appointments</p>';
+                }
+            }
+
+            async loadStaff() {
+                try {
+                    const staff = await this.apiCall('/staff');
+                    this.staff = staff;
+                    const container = document.getElementById('staffList');
+                    
+                    if (container) {
+                        container.innerHTML = staff.map(member => `
+                            <div class="item">
+                                <div>
+                                    <h4>${member.name}</h4>
+                                    <p>${member.role} - ${member.department}</p>
+                                    <p>Phone: ${member.phone} • Email: ${member.email}</p>
+                                    <p>Salary: ₹${member.salary.toLocaleString()}</p>
+                                </div>
+                                <div>
+                                    <button class="action-button danger" onclick="app.deleteStaff('${member.id}')">Delete</button>
+                                </div>
+                            </div>
+                        `).join('');
+                    }
+
+                    // FIXED: Populate doctor dropdown for appointments
+                    this.populateDoctorDropdown(staff);
+                } catch (error) {
+                    const container = document.getElementById('staffList');
+                    if (container) {
+                        container.innerHTML = '<p>Error loading staff</p>';
+                    }
+                }
+            }
+
+            // FIXED: New method to populate doctor dropdown
+            populateDoctorDropdown(staff) {
+                const doctorSelect = document.getElementById('doctorSelect');
+                if (doctorSelect) {
+                    const doctors = staff.filter(member => member.role === 'doctor');
+                    doctorSelect.innerHTML = '<option value="">Select Doctor</option>' +
+                        doctors.map(doctor => `<option value="${doctor.name}">${doctor.name}</option>`).join('');
+                }
+            }
+
+            async loadBilling() {
+                try {
+                    const billing = await this.apiCall('/billing');
+                    const container = document.getElementById('billingList');
+                    
+                    container.innerHTML = billing.map(bill => `
+                        <div class="item">
+                            <div>
+                                <h4>Bill ${bill.id}</h4>
+                                <p>Patient: ${bill.patientName} • Medicine: ${bill.medicineName || 'N/A'}</p>
+                                <p>Amount: ₹${bill.total.toFixed(2)} • Status: ${bill.status} • Date: ${bill.date}</p>
+                            </div>
+                            <div>
+                                ${bill.status === 'pending' ? `
+                                    <button class="action-button success" onclick="app.updateBillStatus('${bill.id}', 'paid')">Mark Paid</button>
+                                ` : ''}
+                            </div>
+                        </div>
+                    `).join('');
+                } catch (error) {
+                    document.getElementById('billingList').innerHTML = '<p>Error loading billing</p>';
+                }
+            }
+
+            async loadMedicines() {
+                try {
+                    const medicines = await this.apiCall('/medicines');
+                    this.medicines = medicines;
+                    const container = document.getElementById('medicinesList');
+                    
+                    container.innerHTML = medicines.map(medicine => {
+                        let stockClass = 'stock-high';
+                        if (medicine.stock < 10) stockClass = 'stock-low';
+                        else if (medicine.stock < 50) stockClass = 'stock-medium';
+
+                        return `
+                            <div class="item">
+                                <div>
+                                    <h4>${medicine.name}</h4>
+                                    <p>Category: ${medicine.category} • Price: ₹${medicine.price.toFixed(2)}</p>
+                                    <p>Supplier: ${medicine.supplier} • Expiry: ${medicine.expiry}</p>
+                                    <span class="stock-indicator ${stockClass}">Stock: ${medicine.stock}</span>
+                                </div>
+                                <div>
+                                    ${this.currentUser.role === 'pharmacist' ? `
+                                        <button class="action-button" onclick="app.updateStock('${medicine.id}')">Update Stock</button>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+
+                    if (this.currentUser.role === 'receptionist') {
+                        this.populateMedicineDropdowns(medicines);
+                    }
+                } catch (error) {
+                    console.error('Error loading medicines:', error);
+                    document.getElementById('medicinesList').innerHTML = '<p>Error loading medicines</p>';
+                }
+            }
+
+            populateMedicineDropdowns(medicines) {
+                const selects = document.querySelectorAll('select[name="medicineId"]');
+                selects.forEach(select => {
+                    select.innerHTML = '<option value="">Select Medicine</option>' +
+                        medicines.map(m => `<option value="${m.id}" data-price="${m.price}">${m.name} - ₹${m.price} (Stock: ${m.stock})</option>`).join('');
+                });
+            }
+
+            showTab(tabName) {
+                document.querySelectorAll('.tab-content').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                document.querySelectorAll('.tab-button').forEach(button => {
+                    button.classList.remove('active');
+                });
+
+                document.getElementById(tabName).classList.add('active');
+                document.querySelectorAll('.tab-button').forEach(button => {
+                    if (button.textContent.toLowerCase().includes(tabName) || 
+                        (tabName === 'dashboard' && button.textContent.toLowerCase().includes('dashboard'))) {
+                        button.classList.add('active');
+                    }
+                });
+            }
+
+            // Form handlers
+            async addPatient(event) {
+                const formData = new FormData(event.target);
+                const patientData = {
+                    name: formData.get('name'),
+                    age: parseInt(formData.get('age')),
+                    phone: formData.get('phone'),
+                    email: formData.get('email'),
+                    address: formData.get('address')
+                };
+
+                try {
+                    await this.apiCall('/patients', {
+                        method: 'POST',
+                        body: patientData
+                    });
+
+                    event.target.reset();
+                    this.hideAddPatientForm();
+                    await this.loadPatients();
+                    alert('Patient added successfully!');
+                } catch (error) {
+                    // Error already handled
+                }
+            }
+
+            async addAppointment(event) {
+                const formData = new FormData(event.target);
+                const appointmentData = {
+                    patientId: formData.get('patientId'),
+                    doctor: formData.get('doctor'),
+                    date: formData.get('date'),
+                    time: formData.get('time'),
+                    reason: formData.get('reason')
+                };
+
+                try {
+                    await this.apiCall('/appointments', {
+                        method: 'POST',
+                        body: appointmentData
+                    });
+
+                    event.target.reset();
+                    this.hideAddAppointmentForm();
+                    await this.loadAppointments();
+                    alert('Appointment scheduled successfully!');
+                } catch (error) {
+                    // Error already handled
+                }
+            }
+
+            async addStaff(event) {
+                const formData = new FormData(event.target);
+                const staffData = {
+                    name: formData.get('name'),
+                    role: formData.get('role'),
+                    department: formData.get('department'),
+                    phone: formData.get('phone'),
+                    email: formData.get('email'),
+                    salary: parseFloat(formData.get('salary'))
+                };
+
+                try {
+                    await this.apiCall('/staff', {
+                        method: 'POST',
+                        body: staffData
+                    });
+
+                    event.target.reset();
+                    this.hideAddStaffForm();
+                    await this.loadStaff();
+                    await this.loadStats();
+                    alert('Staff member added successfully!');
+                } catch (error) {
+                    // Error already handled
+                }
+            }
+
+            async addMedicine(event) {
+                const formData = new FormData(event.target);
+                const medicineData = {
+                    name: formData.get('name'),
+                    category: formData.get('category'),
+                    stock: parseInt(formData.get('stock')),
+                    price: parseFloat(formData.get('price')),
+                    expiry: formData.get('expiry'),
+                    supplier: formData.get('supplier')
+                };
+
+                try {
+                    await this.apiCall('/medicines', {
+                        method: 'POST',
+                        body: medicineData
+                    });
+
+                    event.target.reset();
+                    this.hideAddMedicineForm();
+                    await this.loadMedicines();
+                    alert('Medicine added successfully!');
+                } catch (error) {
+                    // Error already handled
+                }
+            }
+
+            async addBill(event) {
+                const formData = new FormData(event.target);
+                const billData = {
+                    patientId: formData.get('patientId'),
+                    medicineId: formData.get('medicineId'),
+                    quantity: parseInt(formData.get('quantity')),
+                    description: formData.get('description')
+                };
+
+                try {
+                    await this.apiCall('/billing', {
+                        method: 'POST',
+                        body: billData
+                    });
+
+                    event.target.reset();
+                    this.hideAddBillForm();
+                    await this.loadBilling();
+                    await this.loadMedicines();
+                    alert('Bill created successfully!');
+                } catch (error) {
+                    // Error already handled
+                }
+            }
+
+            // Utility functions
+            async viewPatient(patientId) {
+                try {
+                    const patient = await this.apiCall(`/patients/${patientId}`);
+                    alert(`Patient Details:\nName: ${patient.name}\nAge: ${patient.age}\nPhone: ${patient.phone}\nEmail: ${patient.email || 'N/A'}\nAddress: ${patient.address || 'N/A'}`);
+                } catch (error) {
+                    // Error already handled
+                }
+            }
+
+            async deletePatient(patientId) {
+                if (!confirm('Are you sure you want to delete this patient?')) return;
+
+                try {
+                    await this.apiCall(`/patients/${patientId}`, { method: 'DELETE' });
+                    await this.loadPatients();
+                    if (this.currentUser.role === 'admin') {
+                        await this.loadStats();
+                    }
+                    alert('Patient deleted successfully!');
+                } catch (error) {
+                    // Error already handled
+                }
+            }
+
+            async deleteStaff(staffId) {
+                if (!confirm('Are you sure you want to delete this staff member?')) return;
+
+                try {
+                    await this.apiCall(`/staff/${staffId}`, { method: 'DELETE' });
+                    await this.loadStaff();
+                    await this.loadStats();
+                    alert('Staff member deleted successfully!');
+                } catch (error) {
+                    // Error already handled
+                }
+            }
+
+            async updateAppointmentStatus(appointmentId, status) {
+                try {
+                    await this.apiCall(`/appointments/${appointmentId}/status`, {
+                        method: 'PATCH',
+                        body: { status }
+                    });
+                    await this.loadAppointments();
+                    alert(`Appointment ${status} successfully!`);
+                } catch (error) {
+                    // Error already handled
+                }
+            }
+
+            async updateBillStatus(billId, status) {
+                try {
+                    await this.apiCall(`/billing/${billId}/status`, {
+                        method: 'PATCH',
+                        body: { status }
+                    });
+                    await this.loadBilling();
+                    if (this.currentUser.role === 'admin') {
+                        await this.loadStats();
+                    }
+                    alert('Bill status updated successfully!');
+                } catch (error) {
+                    // Error already handled
+                }
+            }
+
+            async updateStock(medicineId) {
+                const newStock = prompt('Enter new stock quantity:');
+                if (newStock === null || newStock === '') return;
+
+                const stockNum = parseInt(newStock);
+                if (isNaN(stockNum) || stockNum < 0) {
+                    alert('Please enter a valid positive number');
+                    return;
+                }
+
+                try {
+                    await this.apiCall(`/medicines/${medicineId}/stock`, {
+                        method: 'PATCH',
+                        body: { stock: stockNum, operation: 'set' }
+                    });
+                    await this.loadMedicines();
+                    alert('Stock updated successfully!');
+                } catch (error) {
+                    // Error already handled
+                }
+            }
+
+            // Form visibility functions
+            showAddPatientForm() {
+                document.getElementById('addPatientForm').style.display = 'block';
+            }
+
+            hideAddPatientForm() {
+                document.getElementById('addPatientForm').style.display = 'none';
+            }
+
+            showAddAppointmentForm() {
+                document.getElementById('addAppointmentForm').style.display = 'block';
+            }
+
+            hideAddAppointmentForm() {
+                document.getElementById('addAppointmentForm').style.display = 'none';
+            }
+
+            showAddStaffForm() {
+                document.getElementById('addStaffForm').style.display = 'block';
+            }
+
+            hideAddStaffForm() {
+                document.getElementById('addStaffForm').style.display = 'none';
+            }
+
+            showAddMedicineForm() {
+                document.getElementById('addMedicineForm').style.display = 'block';
+            }
+
+            hideAddMedicineForm() {
+                document.getElementById('addMedicineForm').style.display = 'none';
+            }
+
+            showAddBillForm() {
+                document.getElementById('addBillForm').style.display = 'block';
+            }
+
+            hideAddBillForm() {
+                document.getElementById('addBillForm').style.display = 'none';
+            }
+
+            logout() {
+                this.token = null;
+                this.currentUser = null;
+                this.patients = [];
+                this.medicines = [];
+                this.staff = [];
+                this.showLoginScreen();
+                document.getElementById('loginForm').reset();
+                document.querySelectorAll('.role-button').forEach(b => b.classList.remove('active'));
+                document.querySelector('.role-button').classList.add('active');
+            }
+        }
+
+        // Global functions
+        let app;
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            app = new SimpleHMSAPI();
+        });
+
+        function logout() {
+            app.logout();
+        }
+
+        function showAddPatientForm() {
+            app.showAddPatientForm();
+        }
+
+        function hideAddPatientForm() {
+            app.hideAddPatientForm();
+        }
+
+        function showAddAppointmentForm() {
+            app.showAddAppointmentForm();
+        }
+
+        function hideAddAppointmentForm() {
+            app.hideAddAppointmentForm();
+        }
+
+        function showAddStaffForm() {
+            app.showAddStaffForm();
+        }
+
+        function hideAddStaffForm() {
+            app.hideAddStaffForm();
+        }
+
+        function showAddMedicineForm() {
+            app.showAddMedicineForm();
+        }
+
+        function hideAddMedicineForm() {
+            app.hideAddMedicineForm();
+        }
+
+        function showAddBillForm() {
+            app.showAddBillForm();
+        }
+
+        function hideAddBillForm() {
+            app.hideAddBillForm();
+        }
+
+        // Utility functions for billing form
+        function updateMedicineInfo(select) {
+            const selectedOption = select.selectedOptions[0];
+            const priceInput = document.querySelector('input[name="unitPrice"]');
+            
+            if (selectedOption && selectedOption.dataset.price) {
+                priceInput.value = `₹${parseFloat(selectedOption.dataset.price).toFixed(2)}`;
+                calculateTotal();
+            } else {
+                priceInput.value = '';
+                document.querySelector('input[name="totalAmount"]').value = '';
+            }
+        }
+
+        function calculateTotal() {
+            const medicineSelect = document.querySelector('select[name="medicineId"]');
+            const quantityInput = document.querySelector('input[name="quantity"]');
+            const totalInput = document.querySelector('input[name="totalAmount"]');
+            
+            const selectedOption = medicineSelect.selectedOptions[0];
+            const quantity = parseInt(quantityInput.value) || 0;
+            
+            if (selectedOption && selectedOption.dataset.price && quantity > 0) {
+                const unitPrice = parseFloat(selectedOption.dataset.price);
+                const subtotal = unitPrice * quantity;
+                const tax = subtotal * 0.085; // 8.5% tax
+                const total = subtotal + tax;
+                
+                totalInput.value = `₹${total.toFixed(2)} (incl. tax)`;
+            } else {
+                totalInput.value = '';
+            }
+        }
+    </script>
+</body>
+</html>
